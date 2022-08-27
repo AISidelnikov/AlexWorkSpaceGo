@@ -1,11 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
-
-	"gopkg.in/urfave/cli.v1"
 )
 
 var name = flag.String("name", "World", "A name to say hello to.")
@@ -23,6 +22,11 @@ var opts struct {
 	description:"Use Spanish Languge"`
 }
 
+type configuration struct {
+	Enabled bool
+	Path    string
+}
+
 func main() {
 	/*flag.Parse()
 	if spanish == true {
@@ -37,7 +41,7 @@ func main() {
 	} else {
 		fmt.Printf("Hello %s\n", opts.Name)
 	}*/
-	app := cli.NewApp()
+	/*app := cli.NewApp()
 	app.Usage = "Count up or down"
 	app.Commands = []cli.Command{
 		{
@@ -84,4 +88,15 @@ func main() {
 		},
 	}
 	app.Run(os.Args)
+	*/
+	file, _ := os.Open("config.json")
+	defer file.Close()
+
+	decoder := json.NewDecoder(file)
+	conf := configuration{}
+	err := decoder.Decode(&conf)
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+	fmt.Println(conf.Path)
 }
